@@ -12,22 +12,23 @@ declare _ARGDATA=("$@")
 declare -A _ARGMAP
 declare -A _FLAGMAP
 
-while [ $# -gt 0 ]; do
-  if [[ $1 == *"--"* ]]; then
-    if [[ $1 == *" "* ]]; then
-      shift
+for ((_arg_index_key=1;_arg_index_key<=$#;_arg_index_key++))
+do
+  _arg_index_value=$(expr $_arg_index_key + 1)
+  _arg_key=${!_arg_index_key}
+  _arg_value=${!_arg_index_value}
+  if [[ $_arg_key == *"--"* ]]; then
+    if [[ $_arg_key == *" "* ]]; then
       continue
     fi
-    name="${1:2}"
-    value="${2}"
-    _FLAGMAP[${name}]=1
-    if [[ $value != *"--"* ]] || [[ $value == *" "* ]] ; then
-      _ARGMAP[${name}]="$value"
+    _arg_name="${_arg_key:2}"
+    _FLAGMAP[${_arg_name}]=1
+    if [[ $_arg_value != *"--"* ]] || [[ $_arg_value == *" "* ]] ; then
+      _ARGMAP[${_arg_name}]="$_arg_value"
     else
-      _ARGMAP[${name}]=""
+      _ARGMAP[${_arg_name}]=""
     fi
   fi
-  shift
 done
 
 function _argument() {
